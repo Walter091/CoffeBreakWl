@@ -1,0 +1,1 @@
+SELECT * FROM colaboradores where ID_COLABORADOR = :id
