@@ -20,6 +20,6 @@ public interface RepositorioColaborador extends CrudRepository<Colaborador, Long
 	public boolean validarAlimentoRepetido(@Param("opcao") int opcao);
 
 	@Query(value = "SELECT * FROM colaborador WHERE ID_COLABORADOR = :id", nativeQuery = true)
-	public Colaborador findById(@Param("id") int id);
+	public Colaborador getById(@Param("id") int id);
 
 }
