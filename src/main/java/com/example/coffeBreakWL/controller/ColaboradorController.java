@@ -1,59 +1,89 @@
 package com.example.coffeBreakWL.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.coffeBreakWL.entidade.Colaborador;
-import com.example.coffeBreakWL.natives.UserNativeQuery;
+import com.example.coffeBreakWL.entidade.RepositorioColaborador;
+import com.example.coffeBreakWL.service.ServiceIntColaborador;
 
 @RestController
-@RequestMapping("colaborador")
+@RequestMapping("/colab")
 public class ColaboradorController {
 	
-//	@Autowired
-//	private ServiceIntColaborador servicoFuncionario;
-	
-	@Autowired 
-	private UserNativeQuery userNativeQuery;
-	
-//	@GetMapping
-//	public ResponseEntity<Iterable<Colaborador>> buscar() {
-//		return ResponseEntity.ok(servicoFuncionario.buscarTodos());
-//	}
-//
-//	@PostMapping()
-//	public ResponseEntity<Colaborador> inserir(@RequestBody Colaborador colaborador) {
-//		servicoFuncionario.inserir(colaborador);
-//		return ResponseEntity.ok(colaborador);
-//	}
+	@Autowired
+	private ServiceIntColaborador servicoFuncionario;
 
-	@GetMapping
+	@Autowired
+	private RepositorioColaborador repositorioColaborador;
+	
+	// -----------------------------------------------------------------------
+	
+	@GetMapping("/form")
 	public List<Colaborador> getColaboradores() {
-		return userNativeQuery.buscarTodosColaboradores();
+		return repositorioColaborador.buscarTodosColaboradores();
 	}
 
-	@SuppressWarnings("unchecked")
-	@GetMapping("porId")
-	public List<Colaborador> getPorId() {
-		Colaborador obj = new Colaborador();
-		return (List<Colaborador>) userNativeQuery.buscarPorId(obj.getId());
-	}
+	@PostMapping("/inserir")
+    public void salvarColaborador(@RequestBody Colaborador colaborador) {
+		servicoFuncionario.doAntesDeInserir(colaborador);
+        Colaborador obj = new Colaborador();
+        obj.setId(colaborador.getId());
+        obj.setNome(colaborador.getNome());
+        obj.setCpf(colaborador.getCpf());
+        obj.setOpcoesCb(colaborador.getOpcoesCb());
+        
+        repositorioColaborador.save(obj);				
 
-	@GetMapping("map")
-	public List<Colaborador> buscarPorMapeamento() {
-	   Map<String, Object> map = new HashMap<>();
-	   map.put("ID_COLABORADOR", 1);
-	   map.put("NOME", "Gaspar");
-	   map.put("CPF", "14214485483");
-	   
-	   return userNativeQuery.buscarPorMapeamento(map);
-	}
+    }
 
+	
+	// -----------------------------------------------------------------------
+	
+	
+	// Adiciona novo funcionario
+    @PostMapping("/add")
+    public String novo(@Valid  Colaborador colaborador, BindingResult result) {
 
+        if (result.hasFieldErrors()) {
+            return "redirect:/form";
+        }
+
+        salvarColaborador(colaborador);
+
+        return "redirect:/home";
+    }
+    
+    // Acessa o formulario de edição
+    @GetMapping("form/{id}")
+    public String updateForm(Model model, @PathVariable(name = "id") int id) {
+    	Colaborador colaborador = repositorioColaborador.findById(id);
+//                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+       
+        model.addAttribute("colaborador", colaborador);
+        return "AtualizaForm";
+    }
+
+    // Atualiza funcionario
+    @PostMapping("update/{id}")
+    public String alterarProduto(@Valid Colaborador colaborador, BindingResult result, @PathVariable int id) {
+
+        if (result.hasErrors()) {
+            return "redirect:/form";
+        }
+        
+        salvarColaborador(colaborador);
+        return "redirect:/Home";
+    }
 }

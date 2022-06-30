@@ -1,27 +1,33 @@
 package com.example.coffeBreakWL.entidade;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-import com.example.coffeBreakWL.nucleo.enums.OpcaoCBEnum;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "colaborador")
 public class Colaborador implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "ID_COLABORADOR")
 	private long id;
+	
+	@Column(name = "NOME")
 	private String nome;
+	
+	@Column(name = "CPF")
 	private String cpf;
-	private List<Integer> opcoesCb;
+	
+	@Column(name = "IND_OPCOES_CB")
+	private int opcoesCb;
 	
 	// --------------------------------------------------------------------
 
@@ -49,15 +55,20 @@ public class Colaborador implements Serializable{
 		this.cpf = cpf;
 	}
 
-	public List<OpcaoCBEnum> getOpcoesCb() {
-		List<OpcaoCBEnum> result = new ArrayList<OpcaoCBEnum>();
-		for (int i = 0; i < opcoesCb.size(); i++) {
-			result.add(OpcaoCBEnum.obterPorID(opcoesCb.get(i)));
-		}
-		return result;
+	
+	public int getOpcoesCb() {
+		return opcoesCb;
 	}
-
-	public void setOpcoesCb(List<Integer> opcoesCb) {
+	
+//	public List<OpcaoCBEnum> getListOpcoesCb() {
+//		List<OpcaoCBEnum> result = new ArrayList<OpcaoCBEnum>();
+//		for (int i = 0; i < opcoesCb.size(); i++) {
+//			result.add(OpcaoCBEnum.obterPorID(opcoesCb.get(i)));
+//		}
+//		return result;
+//	}
+	
+	public void setOpcoesCb(int opcoesCb) {
 		this.opcoesCb = opcoesCb;
 	}
 	

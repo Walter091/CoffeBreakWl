@@ -24,14 +24,12 @@ public class ServiceIntColaborador implements ServiceColaborador {
 	@Override
 	public void inserir(Colaborador colaborador){
 		doAntesDeInserir(colaborador);
-		funcionarioRepositorio.save(colaborador);	
-		
 	}
 	
 	public void doAntesDeInserir(Colaborador colaborador) {
 		try {
 			isCpfValido(colaborador.getCpf());
-			validarAlimentosRepetidos(colaborador.getOpcoesCb());
+//			validarAlimentosRepetidos(colaborador.getOpcoesCb());
 		} catch (Exception e) {
 			e.getMessage();
 		}
@@ -42,7 +40,9 @@ public class ServiceIntColaborador implements ServiceColaborador {
 		ValidationCpf validaCpf = new ValidationCpf();
 		if (validaCpf.isValid(cpf, null)) {
 			 throw new Exception("CPF INVÁLIDO!! ");
-		};
+		} else if (funcionarioRepositorio.validarCpfRepetido(cpf)) {
+			throw new Exception("CPF JÁ CADASTRADO!! ");
+		}
 	}
 
 	@Override

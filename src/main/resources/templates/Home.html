@@ -1,0 +1,37 @@
+<head th:replace="~{layoutBase :: head}">
+</head>
+
+<body>
+
+	<div th:replace="~{layoutBase :: navbar}"></div>
+
+	<div class="container mb-2">
+		<h1>Colaboradores</h1>
+		<table class="table table-light">
+			<tr class="table-dark">
+				<th></th>
+				<th scope="col">Nome</th>
+				<th scope="col">CPF</th>
+				<th scope="col">Opções de Alimento</th>
+				<th scope="col"></th>
+			</tr>
+
+			<tr th:each="col : ${Colaborador}">
+				<th scope="row"></th>
+				<td><span th:text="${col.nome}"></span></td>
+				<td><span th:text="${col.cpf}"></span></td>
+				<td><span th:text="${col.opcoesCf}"></td>
+				<td class="buttons "><a th:href="@{form/{id}(id=${col.id})}" th:method="get" class="btn btn-warning"><i
+							class="fa fa-pencil"></i></a>
+					<a th:href="@{delete/{id}(id=${col.id})}" th:method="delete" class="btn btn-danger"><i
+							class="fa fa-trash"></i></a>
+				</td>
+			</tr>
+		</table>
+
+		<a href="/form"><button class="btn btn-dark">Adicionar
+				Colaborador</button></a>
+	</div>
+</body>
+
+</html>
