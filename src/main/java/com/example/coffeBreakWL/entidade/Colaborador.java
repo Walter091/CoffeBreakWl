@@ -9,6 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.example.coffeBreakWL.nucleo.enums.OpcaoCBEnum;
+import com.example.coffeBreakWL.nucleo.utils.StringUtils;
+
 @Entity
 @Table(name = "colaborador")
 public class Colaborador implements Serializable{
@@ -27,7 +30,7 @@ public class Colaborador implements Serializable{
 	private String cpf;
 	
 	@Column(name = "IND_OPCOES_CB")
-	private int opcoesCb;
+	private Integer opcoesCb;
 	
 	// --------------------------------------------------------------------
 
@@ -51,24 +54,28 @@ public class Colaborador implements Serializable{
 		return cpf;
 	}
 	
+	public String getCpfFormatado() {
+		return cpf == null ? " -- " : StringUtils.formatarCpf(cpf);
+	}
+	
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
 	}
 
 	
-	public int getOpcoesCb() {
+	public Integer getOpcoesCb() {
 		return opcoesCb;
 	}
-	
-//	public List<OpcaoCBEnum> getListOpcoesCb() {
-//		List<OpcaoCBEnum> result = new ArrayList<OpcaoCBEnum>();
-//		for (int i = 0; i < opcoesCb.size(); i++) {
-//			result.add(OpcaoCBEnum.obterPorID(opcoesCb.get(i)));
-//		}
-//		return result;
-//	}
-	
-	public void setOpcoesCb(int opcoesCb) {
+
+	public String getOpcoesCbFormatado() {
+		if (opcoesCb != null) {
+			OpcaoCBEnum result = OpcaoCBEnum.obterPorID(opcoesCb);			 
+			return  result.getDescricao();
+		}
+		return "";
+	}
+		
+	public void setOpcoesCb(Integer opcoesCb) {
 		this.opcoesCb = opcoesCb;
 	}
 	

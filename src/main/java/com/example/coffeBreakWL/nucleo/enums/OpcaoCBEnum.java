@@ -1,5 +1,8 @@
 package com.example.coffeBreakWL.nucleo.enums;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum OpcaoCBEnum implements ItfcEnumBase{
 	
 	BOLO("BOLO", "BL", 0),
@@ -22,7 +25,7 @@ public enum OpcaoCBEnum implements ItfcEnumBase{
 	
 	// -------------------------------------------------------------------------------------
 
-	public static OpcaoCBEnum obterPorID(int id) {
+	public static OpcaoCBEnum obterPorID(Integer id) {
 		OpcaoCBEnum result = null;
 		if (id == 0) {
 			result = OpcaoCBEnum.BOLO; 
@@ -49,6 +52,18 @@ public enum OpcaoCBEnum implements ItfcEnumBase{
 		return result;
 	}
 	
+	public static List<OpcaoCBEnum> valuesAll() {
+		List<OpcaoCBEnum> opcoes = new ArrayList<>();
+		opcoes.add(OpcaoCBEnum.CAFE);
+		opcoes.add(OpcaoCBEnum.CUZCUZ);
+		opcoes.add(OpcaoCBEnum.ACHOCOLATADO);
+		opcoes.add(OpcaoCBEnum.BOLACHA);
+		opcoes.add(OpcaoCBEnum.BOLO);
+		opcoes.add(OpcaoCBEnum.LEITE);
+		opcoes.add(OpcaoCBEnum.MISTO);
+		
+		return opcoes; 
+	}
 	
 	@Override
 	public String getDescricao() {

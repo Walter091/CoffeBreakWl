@@ -1,17 +1,16 @@
 package com.example.coffeBreakWL.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.coffeBreakWL.entidade.Colaborador;
 import com.example.coffeBreakWL.entidade.RepositorioColaborador;
-import com.example.coffeBreakWL.nucleo.enums.OpcaoCBEnum;
 import com.example.coffeBreakWL.nucleo.validacoes.ValidationCpf;
 
 @Service
 public class ServiceIntColaborador implements ServiceColaborador {
+
+	public String ERRO = " ";
 
 	@Autowired
 	private RepositorioColaborador funcionarioRepositorio;
@@ -26,32 +25,50 @@ public class ServiceIntColaborador implements ServiceColaborador {
 		doAntesDeInserir(colaborador);
 	}
 	
-	public void doAntesDeInserir(Colaborador colaborador) {
+	public boolean doAntesDeInserir(Colaborador colaborador) {
+		boolean resultCpf = false;
+		boolean resultOpcao = false;
 		try {
-			isCpfValido(colaborador.getCpf());
-//			validarAlimentosRepetidos(colaborador.getOpcoesCb());
+			
+			resultCpf = isCpfValido(colaborador.getCpf()) ? true : false;
+			resultOpcao = validarAlimentosRepetidos(colaborador.getOpcoesCb()) ? true : false;
+			
 		} catch (Exception e) {
 			e.getMessage();
 		}
+		
+		return resultCpf && resultOpcao == true ? true : false;
 	}
 	
 	@Override
-	public void isCpfValido(String cpf) throws Exception{
+	public boolean isCpfValido(String cpf) throws Exception{
 		ValidationCpf validaCpf = new ValidationCpf();
-		if (validaCpf.isValid(cpf, null)) {
-			 throw new Exception("CPF INVÁLIDO!! ");
-		} else if (funcionarioRepositorio.validarCpfRepetido(cpf)) {
-			throw new Exception("CPF JÁ CADASTRADO!! ");
-		}
+		if (!validaCpf.isValid(cpf, null)) {
+			 ERRO = "CPF INVÁLIDO!";
+			 return false;
+		} else if (funcionarioRepositorio.validarCpfRepetido(cpf) == null) {
+			ERRO = "CPF JÁ CADASTRADO!";
+			return false;
+		} 
+		return true;
 	}
 
 	@Override
-	public void validarAlimentosRepetidos(List<OpcaoCBEnum> opcoes) throws Exception {
-		for (int i = 0; i < opcoes.size(); i++) {
-			if (opcoes.get(i) == opcoes.get(i+1)) {
-				throw new Exception("ALIMENTOS REPETIDOS!! POR FAVOR ALTERE SUA OPÇÃO");
-			}
+	public boolean validarAlimentosRepetidos(Integer opcao) throws Exception {
+		if (funcionarioRepositorio.validarAlimentoRepetido(opcao) != null) {
+			ERRO = "OUTRO COLABORADOR JÁ ESCOLHEU ESTA OPÇÃO!";
+			return false;
 		}
+		return true;
+	}
+	// ---------------------------------------------------------------------------------
+
+	public String getERRO() {
+		return ERRO;
+	}
+
+	public void setERRO(String eRRO) {
+		ERRO = eRRO;
 	}
 	
 }

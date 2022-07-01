@@ -29,6 +29,7 @@ public class ColaboradorController {
 	@GetMapping("/index")
 	public String getColaboradores(Model model) {
 		model.addAttribute("listaPessoas", repositorioColaborador.buscarTodosColaboradores());
+		
 		return "index"; 
 	}
 	
@@ -37,13 +38,13 @@ public class ColaboradorController {
 		return "form";
 	}
 	
-	@GetMapping("/index/{id}")
+	@GetMapping("/index/alterar/{id}")
 	public String alterarColaborador(@PathVariable("id") long id, Model model) {
 		Optional<Colaborador> colabOptional = repositorioColaborador.findById(id);
 		if (colabOptional.isEmpty()) {
 			throw new IllegalArgumentException("Pessoa Inválida");
 		}
-		model.addAttribute("pessoa", colabOptional.get());
+		model.addAttribute("colaborador", colabOptional.get());
 		
 		return "form";
 	}
@@ -60,17 +61,29 @@ public class ColaboradorController {
 	}
 
 	
-	
 	@PostMapping("/salvar")
-	public String salvar(@ModelAttribute("colaborador") Colaborador colaborador) {
-		salvarColaborador(colaborador);
-		return "redirect:/index";
+	public String salvar(@ModelAttribute("colaborador") Colaborador colaborador, Model model) {
+		if (msgValidacaoSalvamento(colaborador)) {
+			return "redirect:/index";
+		} else {
+			String msgErro = servicoFuncionario.getERRO();
+			model.addAttribute("msgError", msgErro);
+			
+			return "form";
+		}
+
 	}
 	
+	public boolean msgValidacaoSalvamento(Colaborador colaborador) {
+		if (servicoFuncionario.doAntesDeInserir(colaborador)) {
+			salvarColaborador(colaborador);			
+			return true;
+		}
+		return false;
+	}
 
 	@PostMapping("/inserir")
     public void salvarColaborador(@RequestBody Colaborador colaborador) {
-		servicoFuncionario.doAntesDeInserir(colaborador);
         Colaborador obj = new Colaborador();
         obj.setId(colaborador.getId());
         obj.setNome(colaborador.getNome());

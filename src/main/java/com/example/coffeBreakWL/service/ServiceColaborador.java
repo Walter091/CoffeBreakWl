@@ -1,9 +1,6 @@
 package com.example.coffeBreakWL.service;
 
-import java.util.List;
-
 import com.example.coffeBreakWL.entidade.Colaborador;
-import com.example.coffeBreakWL.nucleo.enums.OpcaoCBEnum;
 
 public interface ServiceColaborador {
 	
@@ -11,8 +8,8 @@ public interface ServiceColaborador {
 	
 	void inserir(Colaborador colaborador) throws Exception;
 	
-	void isCpfValido(String cpf) throws Exception;
+	boolean isCpfValido(String cpf) throws Exception;
 	
-	void validarAlimentosRepetidos(List<OpcaoCBEnum> opcoes) throws Exception;
+	boolean validarAlimentosRepetidos(Integer opcao) throws Exception;
 }
 

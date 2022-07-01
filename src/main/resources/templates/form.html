@@ -13,16 +13,25 @@
 	<div class="container my-2">
 		<h1>Coffe Break WL - Colaboradores</h1>
 		<hr>
-		<h2>Editar Colaborador</h2>
 		<form action="#" th:action="@{/salvar}" th:object="${colaborador}" method="POST">
 			<input type="hidden" id="id" th:field="*{id}">
-			<input type="text" th:field="*{nome}" placeholder="Nome" class="form-control mb-4 col-4">
-			<input type="text" th:field="*{cpf}" placeholder="CPF" class="form-control mb-4 col-4">
-			<input type="text" th:field="*{opcoesCb}" placeholder="Opções" class="form-control mb-4 col-4">
-	
+			<input type="text" th:field="*{nome}" required="true" placeholder="Nome" class="form-control mb-4 col-4">
+			<input type="number" th:field="*{cpf}" required="true" placeholder="CPF" class="form-control mb-4 col-4">
+
+			<select id="select">
+				<option></option >
+				<option th:each="opcao : ${T( com.example.coffeBreakWL.nucleo.enums.OpcaoCBEnum).values()}" 
+					th:value="${opcao}" th:text="${opcao.descricao}"></option>
+			</select>
+			<br><br>
 			<button type="submit" class="btn btn-info col-2">Salvar</button>
+			
 		</form>
 		<hr>
+			<div id="divMsgError" th:each="m : ${msgError}">
+				<span th:text="${m}"></span>
+			</div >
+		
 		<a th:href="@{/index}">Retornar para a lista de pessoas</a>
 	</div>
 </body>
