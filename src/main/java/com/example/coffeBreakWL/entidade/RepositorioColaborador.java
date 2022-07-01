@@ -21,5 +21,16 @@ public interface RepositorioColaborador extends CrudRepository<Colaborador, Long
 
 	@Query(value = "SELECT * FROM colaborador WHERE ID_COLABORADOR = :id", nativeQuery = true)
 	public Colaborador getById(@Param("id") int id);
-
+	
+	// --------------------------------------------------------------------------------------------
+	
+	@Query(value = "DELETE FROM colaborador WHERE ID_COLABORADOR = :id", nativeQuery = true)
+	public void excluir(@Param("id") int id);
+	
+	@Query(value = "INSERT INTO colaborador (NOME, CPF, IND_OPCOES_CB) VALUES (:obj.nome, :obj.cpf, :obj.opcoesCb)", nativeQuery = true)
+	public void salvar(@Param("obj") Colaborador obj);
+	
+	@Query(value = "UPDATE colaborador SET NOME=:obj.nome, CPF=:obj.cpf, IND_OPCOES_CB=:obj.opcoesCb WHERE ID_COLABORADOR= :obj.id;)", nativeQuery = true)
+	public void alterar(@Param("obj") Colaborador obj);
+		
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.coffeBreakWL.entidade.Colaborador;
 import com.example.coffeBreakWL.entidade.RepositorioColaborador;
+import com.example.coffeBreakWL.nucleo.enums.StatusFormularioEnum;
 import com.example.coffeBreakWL.service.ServiceIntColaborador;
 
 @Controller
@@ -24,10 +25,12 @@ public class ColaboradorController {
 	@Autowired
 	private RepositorioColaborador repositorioColaborador;
 	
+	private StatusFormularioEnum statusFormulario;
 	// -----------------------------------------------------------------------
 	
 	@GetMapping("/index")
 	public String getColaboradores(Model model) {
+		statusFormulario = StatusFormularioEnum.VIZUALIZAR;
 		model.addAttribute("listaPessoas", repositorioColaborador.buscarTodosColaboradores());
 		
 		return "index"; 
@@ -35,11 +38,46 @@ public class ColaboradorController {
 	
 	@GetMapping("/incluirNovo")
 	public String incluirNovoColaborador(@ModelAttribute("colaborador") Colaborador colaborador) {
+		statusFormulario = StatusFormularioEnum.INCLUIR;
 		return "form";
 	}
 	
+	@PostMapping("/salvar")
+	public String salvar(@ModelAttribute("colaborador") Colaborador colaborador, Model model) {
+		if (msgValidacaoSalvamento(colaborador)) {
+			return "redirect:/index";
+		} else {
+			String msgErro = servicoFuncionario.getERRO();
+			model.addAttribute("msgError", msgErro);
+			
+			return "form";
+		}
+
+	}
+	
+	public boolean msgValidacaoSalvamento(Colaborador colaborador) {
+		if (servicoFuncionario.doAntesDeInserir(colaborador, statusFormulario)) {
+			salvarColaborador(colaborador);			
+			return true;
+		}
+		return false;
+	}
+
+	@PostMapping("/inserir")
+    public void salvarColaborador(@RequestBody Colaborador colaborador) {
+        Colaborador obj = new Colaborador();
+        obj.setId(colaborador.getId());
+        obj.setNome(colaborador.getNome());
+        obj.setCpf(colaborador.getCpf());
+        obj.setOpcoesCb(colaborador.getOpcoesCb());
+        
+        repositorioColaborador.save(obj);				
+
+    }
+
 	@GetMapping("/index/alterar/{id}")
 	public String alterarColaborador(@PathVariable("id") long id, Model model) {
+		statusFormulario = StatusFormularioEnum.ALTERAR;
 		Optional<Colaborador> colabOptional = repositorioColaborador.findById(id);
 		if (colabOptional.isEmpty()) {
 			throw new IllegalArgumentException("Pessoa Inválida");
@@ -61,37 +99,5 @@ public class ColaboradorController {
 	}
 
 	
-	@PostMapping("/salvar")
-	public String salvar(@ModelAttribute("colaborador") Colaborador colaborador, Model model) {
-		if (msgValidacaoSalvamento(colaborador)) {
-			return "redirect:/index";
-		} else {
-			String msgErro = servicoFuncionario.getERRO();
-			model.addAttribute("msgError", msgErro);
-			
-			return "form";
-		}
-
-	}
-	
-	public boolean msgValidacaoSalvamento(Colaborador colaborador) {
-		if (servicoFuncionario.doAntesDeInserir(colaborador)) {
-			salvarColaborador(colaborador);			
-			return true;
-		}
-		return false;
-	}
-
-	@PostMapping("/inserir")
-    public void salvarColaborador(@RequestBody Colaborador colaborador) {
-        Colaborador obj = new Colaborador();
-        obj.setId(colaborador.getId());
-        obj.setNome(colaborador.getNome());
-        obj.setCpf(colaborador.getCpf());
-        obj.setOpcoesCb(colaborador.getOpcoesCb());
-        
-        repositorioColaborador.save(obj);				
-
-    }
 
 }

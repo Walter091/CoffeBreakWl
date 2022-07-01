@@ -1,15 +1,14 @@
 package com.example.coffeBreakWL.service;
 
 import com.example.coffeBreakWL.entidade.Colaborador;
+import com.example.coffeBreakWL.nucleo.enums.StatusFormularioEnum;
 
 public interface ServiceColaborador {
 	
 	Iterable<Colaborador> buscarTodos();
 	
-	void inserir(Colaborador colaborador) throws Exception;
+	boolean isCpfValido(String cpf, StatusFormularioEnum status) throws Exception;
 	
-	boolean isCpfValido(String cpf) throws Exception;
-	
-	boolean validarAlimentosRepetidos(Integer opcao) throws Exception;
+	boolean validarAlimentosRepetidos(Integer opcao, StatusFormularioEnum status) throws Exception;
 }
 
