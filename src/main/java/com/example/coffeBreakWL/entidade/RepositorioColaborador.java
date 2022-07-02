@@ -2,11 +2,12 @@ package com.example.coffeBreakWL.entidade;
 
 import java.util.List;
 
-import org.springframework.data.jdbc.repository.query.Modifying;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface RepositorioColaborador extends CrudRepository<Colaborador, Long> {
@@ -21,18 +22,23 @@ public interface RepositorioColaborador extends CrudRepository<Colaborador, Long
 	public List<Colaborador> validarAlimentoRepetido(@Param("opcao") int opcao);
 
 	@Query(value = "SELECT * FROM colaborador WHERE ID_COLABORADOR = :id", nativeQuery = true)
-	public Colaborador getById(@Param("id") int id);
+	public Colaborador getById(@Param("id") long id);
 	
 	// --------------------------------------------------------------------------------------------
 	
-//	@Query(value = "DELETE FROM colaborador WHERE ID_COLABORADOR = :id", nativeQuery = true)
-//	public void excluir(@Param("id") int id);
+	@Modifying
+	@Transactional
+	@Query(value = "DELETE FROM colaborador WHERE ID_COLABORADOR = :id", nativeQuery = true)
+	public void excluir(@Param("id") Long id);
 	
 	@Modifying
-	@Query(value = "INSERT INTO colaborador (NOME, CPF, IND_OPCOES_CB) VALUES (nome, cpf, opcoesCb)", nativeQuery = true)
-	public void salvar(@Param("nome") String nome, @Param("cpf") String cpf, @Param("opcoes") Integer opcoes);
+	@Transactional
+	@Query(value = "INSERT INTO colaborador (ID_COLABORADOR, NOME, CPF, IND_OPCOES_CB) VALUES (:id, :nome, :cpf, :opcoesCb)", nativeQuery = true)
+	public void salvar(@Param("id") Long id, @Param("nome") String nome, @Param("cpf") String cpf, @Param("opcoesCb") Integer opcoes);
 	
-//	@Query(value = "UPDATE colaborador SET NOME=:obj.nome, CPF=:obj.cpf, IND_OPCOES_CB=:obj.opcoesCb WHERE ID_COLABORADOR= :obj.id;)", nativeQuery = true)
-//	public void alterar(@Param("obj") Colaborador obj);
+	@Modifying
+	@Transactional
+	@Query(value = "UPDATE colaborador SET NOME= :nome, CPF= :cpf, IND_OPCOES_CB= :opcoesCb WHERE ID_COLABORADOR= :id", nativeQuery = true)
+	public void alterar(@Param("id") Long id, @Param("nome") String nome, @Param("cpf") String cpf, @Param("opcoesCb") Integer opcoes);
 		
 }

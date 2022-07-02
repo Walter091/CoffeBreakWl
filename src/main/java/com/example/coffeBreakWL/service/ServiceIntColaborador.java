@@ -2,6 +2,7 @@ package com.example.coffeBreakWL.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,12 +18,7 @@ public class ServiceIntColaborador implements ServiceColaborador {
 	public String ERRO = " ";
 
 	@Autowired
-	private RepositorioColaborador funcionarioRepositorio;
-
-	@Override
-	public Iterable<Colaborador> buscarTodos() {
-		return funcionarioRepositorio.findAll();
-	}
+	private RepositorioColaborador repositorioColaborador;
 		
 	public boolean doAntesDeInserir(Colaborador colaborador, StatusFormularioEnum status) {
 		boolean resultCpf = false;
@@ -48,7 +44,7 @@ public class ServiceIntColaborador implements ServiceColaborador {
 		} 
 		if (status == StatusFormularioEnum.ALTERAR) {
 			return true;
-		} else if (funcionarioRepositorio.validarCpfRepetido(cpf).size() > 0) {
+		} else if (repositorioColaborador.validarCpfRepetido(cpf).size() > 0) {
 			ERRO = "CPF JÁ CADASTRADO!";
 			return false;
 		} 
@@ -58,7 +54,7 @@ public class ServiceIntColaborador implements ServiceColaborador {
 	@Override
 	public boolean validarAlimentosRepetidos(Integer opcao) throws Exception {
 		List<Colaborador> objs = new ArrayList<>();
-		objs = funcionarioRepositorio.validarAlimentoRepetido(opcao);
+		objs = repositorioColaborador.validarAlimentoRepetido(opcao);
 		if (objs.size() > 0) {
 			ERRO = "OUTRO COLABORADOR JÁ ESCOLHEU A OPÇÃO: "
 					+ getOpcoes(objs);
@@ -73,6 +69,32 @@ public class ServiceIntColaborador implements ServiceColaborador {
 			result.add(objs.get(i).getOpcoesCbFormatado());
 		}
 		return result;
+	}
+	
+	// ---------------------------------------------------------------------------------
+
+	public Iterable<Colaborador> buscarTodos() {
+		return repositorioColaborador.buscarTodosColaboradores();
+	}
+	
+	public Colaborador buscarPorIdQN(long id){
+		return repositorioColaborador.getById(id);
+	}
+
+	public Optional<Colaborador> buscarPorId(long id){
+		return repositorioColaborador.findById(id);
+	}
+	
+	public void salvar(Colaborador obj) {
+		repositorioColaborador.salvar(obj.getId(), obj.getNome(), obj.getCpf(), obj.getOpcoesCb()); 
+	}
+	
+	public void excluir(long id) {
+		repositorioColaborador.excluir(id);	
+	}
+	
+	public void alterar(Colaborador colaborador) {
+		repositorioColaborador.alterar(colaborador.getId(), colaborador.getNome(), colaborador.getCpf(), colaborador.getOpcoesCb());
 	}
 	
 	// ---------------------------------------------------------------------------------

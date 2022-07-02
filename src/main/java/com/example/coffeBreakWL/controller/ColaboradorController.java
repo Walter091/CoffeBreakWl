@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.coffeBreakWL.entidade.Colaborador;
-import com.example.coffeBreakWL.entidade.RepositorioColaborador;
 import com.example.coffeBreakWL.nucleo.enums.StatusFormularioEnum;
 import com.example.coffeBreakWL.service.ServiceIntColaborador;
 
@@ -20,18 +19,16 @@ import com.example.coffeBreakWL.service.ServiceIntColaborador;
 public class ColaboradorController {
 	
 	@Autowired
-	private ServiceIntColaborador servicoFuncionario;
-
-	@Autowired
-	private RepositorioColaborador repositorioColaborador;
+	private ServiceIntColaborador servicoColaborador;
 	
 	private StatusFormularioEnum statusFormulario;
+
 	// -----------------------------------------------------------------------
 	
 	@GetMapping("/index")
 	public String getColaboradores(Model model) {
 		statusFormulario = StatusFormularioEnum.VIZUALIZAR;
-		model.addAttribute("listaPessoas", repositorioColaborador.buscarTodosColaboradores());
+		model.addAttribute("listaPessoas", servicoColaborador.buscarTodos());
 		
 		return "index"; 
 	}
@@ -44,42 +41,36 @@ public class ColaboradorController {
 	
 	@PostMapping("/salvar")
 	public String salvar(@ModelAttribute("colaborador") Colaborador colaborador, Model model) {
-		if (msgValidacaoSalvamento(colaborador)) {
+		if (statusFormulario == StatusFormularioEnum.ALTERAR) {
+			if (servicoColaborador.doAntesDeInserir(colaborador, statusFormulario)) {
+				servicoColaborador.alterar(colaborador);				
+			} else {
+				String msgErro = servicoColaborador.getERRO();
+				model.addAttribute("msgError", msgErro);
+				
+				return "form";
+			}
+		} else if (msgValidacaoSalvamento(colaborador)) {
 			return "redirect:/index";
 		} else {
-			String msgErro = servicoFuncionario.getERRO();
+			String msgErro = servicoColaborador.getERRO();
 			model.addAttribute("msgError", msgErro);
 			
 			return "form";
 		}
-
+		return "redirect:/index";
 	}
 	
-	public boolean msgValidacaoSalvamento(Colaborador colaborador) {
-		if (servicoFuncionario.doAntesDeInserir(colaborador, statusFormulario)) {
-			salvarColaborador(colaborador);			
-			return true;
-		}
-		return false;
-	}
-
 	@PostMapping("/inserir")
-    public void salvarColaborador(@RequestBody Colaborador colaborador) {
-        Colaborador obj = new Colaborador();
-        obj.setId(colaborador.getId());
-        obj.setNome(colaborador.getNome());
-        obj.setCpf(colaborador.getCpf());
-        obj.setOpcoesCb(colaborador.getOpcoesCb());
-        
-//        repositorioColaborador.salvar(obj.getNome(), obj.getCpf(), obj.getOpcoesCb());
-        repositorioColaborador.save(obj);				
+    public void salvarColaborador(@RequestBody Colaborador colaborador) {        
+        servicoColaborador.salvar(colaborador);
 
     }
 
 	@GetMapping("/index/alterar/{id}")
 	public String alterarColaborador(@PathVariable("id") long id, Model model) {
 		statusFormulario = StatusFormularioEnum.ALTERAR;
-		Optional<Colaborador> colabOptional = repositorioColaborador.findById(id);
+		Optional<Colaborador> colabOptional = servicoColaborador.buscarPorId(id);
 		if (colabOptional.isEmpty()) {
 			throw new IllegalArgumentException("Pessoa Inválida");
 		}
@@ -90,13 +81,22 @@ public class ColaboradorController {
 
 	@GetMapping("/index/excluir/{id}")
 	public String excluirColaborador(@PathVariable("id") long id, Model model) {
-		Optional<Colaborador> colabOptional = repositorioColaborador.findById(id);
-		if (colabOptional.isEmpty()) {
+		statusFormulario = StatusFormularioEnum.EXCLUIR;
+		Colaborador obj = servicoColaborador.buscarPorIdQN(id);
+		if (obj == null) {
 			throw new IllegalArgumentException("Pessoa Inválida");
 		}
 		
-		repositorioColaborador.delete(colabOptional.get());
+		servicoColaborador.excluir(obj.getId());
 		return "redirect:/index";
+	}
+
+	public boolean msgValidacaoSalvamento(Colaborador colaborador) {
+		if (servicoColaborador.doAntesDeInserir(colaborador, statusFormulario)) {
+			salvarColaborador(colaborador);			
+			return true;
+		}
+		return false;
 	}
 
 	
