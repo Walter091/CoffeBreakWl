@@ -71,6 +71,7 @@ public class ColaboradorController {
         obj.setCpf(colaborador.getCpf());
         obj.setOpcoesCb(colaborador.getOpcoesCb());
         
+//        repositorioColaborador.salvar(obj.getNome(), obj.getCpf(), obj.getOpcoesCb());
         repositorioColaborador.save(obj);				
 
     }

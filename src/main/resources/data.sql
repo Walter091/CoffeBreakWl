@@ -5,3 +5,5 @@ CREATE TABLE colaborador (
   IND_OPCOES_CB INT,		
   PRIMARY KEY (ID_COLABORADOR)
 );
+
+

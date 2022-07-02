@@ -62,21 +62,23 @@ public class Colaborador implements Serializable{
 		this.cpf = cpf;
 	}
 
-	
 	public Integer getOpcoesCb() {
 		return opcoesCb;
 	}
 
-	public String getOpcoesCbFormatado() {
-		if (opcoesCb != null) {
-			OpcaoCBEnum result = OpcaoCBEnum.obterPorID(opcoesCb);			 
-			return  result.getDescricao();
-		}
-		return "";
-	}
-		
 	public void setOpcoesCb(Integer opcoesCb) {
 		this.opcoesCb = opcoesCb;
 	}
-	
+
+	public String getOpcoesCbFormatado() {
+		String result = " ";
+		if (opcoesCb != null) {
+			OpcaoCBEnum obj = OpcaoCBEnum.obterPorID(opcoesCb);
+			result = obj.getDescricao();
+		}	
+		
+		return result;
+	}
+
+
 }

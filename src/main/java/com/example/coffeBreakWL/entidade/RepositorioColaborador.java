@@ -2,6 +2,7 @@ package com.example.coffeBreakWL.entidade;
 
 import java.util.List;
 
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -24,13 +25,14 @@ public interface RepositorioColaborador extends CrudRepository<Colaborador, Long
 	
 	// --------------------------------------------------------------------------------------------
 	
-	@Query(value = "DELETE FROM colaborador WHERE ID_COLABORADOR = :id", nativeQuery = true)
-	public void excluir(@Param("id") int id);
+//	@Query(value = "DELETE FROM colaborador WHERE ID_COLABORADOR = :id", nativeQuery = true)
+//	public void excluir(@Param("id") int id);
 	
-	@Query(value = "INSERT INTO colaborador (NOME, CPF, IND_OPCOES_CB) VALUES (:obj.nome, :obj.cpf, :obj.opcoesCb)", nativeQuery = true)
-	public void salvar(@Param("obj") Colaborador obj);
+	@Modifying
+	@Query(value = "INSERT INTO colaborador (NOME, CPF, IND_OPCOES_CB) VALUES (nome, cpf, opcoesCb)", nativeQuery = true)
+	public void salvar(@Param("nome") String nome, @Param("cpf") String cpf, @Param("opcoes") Integer opcoes);
 	
-	@Query(value = "UPDATE colaborador SET NOME=:obj.nome, CPF=:obj.cpf, IND_OPCOES_CB=:obj.opcoesCb WHERE ID_COLABORADOR= :obj.id;)", nativeQuery = true)
-	public void alterar(@Param("obj") Colaborador obj);
+//	@Query(value = "UPDATE colaborador SET NOME=:obj.nome, CPF=:obj.cpf, IND_OPCOES_CB=:obj.opcoesCb WHERE ID_COLABORADOR= :obj.id;)", nativeQuery = true)
+//	public void alterar(@Param("obj") Colaborador obj);
 		
 }

@@ -1,5 +1,8 @@
 package com.example.coffeBreakWL.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +30,7 @@ public class ServiceIntColaborador implements ServiceColaborador {
 		try {
 			
 			resultCpf = isCpfValido(colaborador.getCpf(), status) ? true : false;
-			resultOpcao = validarAlimentosRepetidos(colaborador.getOpcoesCb(), status) ? true : false;
+			resultOpcao = validarAlimentosRepetidos(colaborador.getOpcoesCb()) ? true : false;
 			
 		} catch (Exception e) {
 			e.getMessage();
@@ -51,15 +54,27 @@ public class ServiceIntColaborador implements ServiceColaborador {
 		} 
 		return true;
 	}
-
+	
 	@Override
-	public boolean validarAlimentosRepetidos(Integer opcao, StatusFormularioEnum status) throws Exception {
-		if (funcionarioRepositorio.validarAlimentoRepetido(opcao).size() > 0) {
-			ERRO = "OUTRO COLABORADOR JÁ ESCOLHEU ESTA OPÇÃO!";
+	public boolean validarAlimentosRepetidos(Integer opcao) throws Exception {
+		List<Colaborador> objs = new ArrayList<>();
+		objs = funcionarioRepositorio.validarAlimentoRepetido(opcao);
+		if (objs.size() > 0) {
+			ERRO = "OUTRO COLABORADOR JÁ ESCOLHEU A OPÇÃO: "
+					+ getOpcoes(objs);
 			return false;
 		}
 		return true;
 	}
+	
+	public List<String> getOpcoes(List<Colaborador> objs){
+		List<String> result = new ArrayList<>();
+		for (int i = 0; i < objs.size(); i++) {
+			result.add(objs.get(i).getOpcoesCbFormatado());
+		}
+		return result;
+	}
+	
 	// ---------------------------------------------------------------------------------
 
 	public String getERRO() {
