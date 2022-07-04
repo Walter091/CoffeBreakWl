@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.coffeBreakWL.entidade.Colaborador;
-import com.example.coffeBreakWL.entidade.RepositorioColaborador;
 import com.example.coffeBreakWL.nucleo.enums.StatusFormularioEnum;
 import com.example.coffeBreakWL.nucleo.validacoes.ValidationCpf;
+import com.example.coffeBreakWL.repositorios.RepositorioColaborador;
 
 @Service
 public class ServiceIntColaborador implements ServiceColaborador {
@@ -52,13 +52,15 @@ public class ServiceIntColaborador implements ServiceColaborador {
 	}
 	
 	@Override
-	public boolean validarAlimentosRepetidos(Integer opcao) throws Exception {
+	public boolean validarAlimentosRepetidos(Integer opcoes) throws Exception {
 		List<Colaborador> objs = new ArrayList<>();
-		objs = repositorioColaborador.validarAlimentoRepetido(opcao);
-		if (objs.size() > 0) {
-			ERRO = "OUTRO COLABORADOR JÁ ESCOLHEU A OPÇÃO: "
-					+ getOpcoes(objs);
-			return false;
+		if (opcoes != null) {
+			objs.addAll(repositorioColaborador.validarAlimentoRepetido(opcoes));
+			if (objs.size() > 0) {
+				ERRO = "OUTRO COLABORADOR JÁ ESCOLHEU A OPÇÃO: "
+						+ getOpcoes(objs);
+				return false;
+			}
 		}
 		return true;
 	}
@@ -76,7 +78,7 @@ public class ServiceIntColaborador implements ServiceColaborador {
 	public Iterable<Colaborador> buscarTodos() {
 		return repositorioColaborador.buscarTodosColaboradores();
 	}
-	
+		
 	public Colaborador buscarPorIdQN(long id){
 		return repositorioColaborador.getById(id);
 	}

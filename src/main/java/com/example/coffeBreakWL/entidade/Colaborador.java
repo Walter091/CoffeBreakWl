@@ -29,6 +29,10 @@ public class Colaborador implements Serializable{
 	@Column(name = "CPF")
 	private String cpf;
 	
+//	@Column(name = "IND_OPCOES_CB")
+//	@OneToMany
+//    private List<OpcaoColaborador> opcoesCb;
+
 	@Column(name = "IND_OPCOES_CB")
 	private Integer opcoesCb;
 	
@@ -66,19 +70,21 @@ public class Colaborador implements Serializable{
 		return opcoesCb;
 	}
 
+	public String getOpcoesCbFormatado() {
+		return opcoesCb == null ? " " : OpcaoCBEnum.obterPorID(opcoesCb).getDescricao();
+	}
+
 	public void setOpcoesCb(Integer opcoesCb) {
 		this.opcoesCb = opcoesCb;
 	}
 
-	public String getOpcoesCbFormatado() {
-		String result = " ";
-		if (opcoesCb != null) {
-			OpcaoCBEnum obj = OpcaoCBEnum.obterPorID(opcoesCb);
-			result = obj.getDescricao();
-		}	
-		
-		return result;
-	}
+//	public List<OpcaoColaborador> getOpcoesCb() {
+//		return opcoesCb;
+//	}
+//
+//	public void setOpcoesCb(List<OpcaoColaborador> opcoesCb) {
+//		this.opcoesCb = opcoesCb;
+//	}
 
-
+	
 }

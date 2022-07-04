@@ -20,6 +20,9 @@ public class ColaboradorController {
 	
 	@Autowired
 	private ServiceIntColaborador servicoColaborador;
+
+//	@Autowired
+//	private ServiceIntOpcaoColaborador servicoOpcaoColaborador; 
 	
 	private StatusFormularioEnum statusFormulario;
 
@@ -34,7 +37,8 @@ public class ColaboradorController {
 	}
 	
 	@GetMapping("/incluirNovo")
-	public String incluirNovoColaborador(@ModelAttribute("colaborador") Colaborador colaborador) {
+	public String incluirNovoColaborador(@ModelAttribute("colaborador") Colaborador colaborador, Model model) {
+//		model.addAttribute("opcoesAlimentos", servicoOpcaoColaborador.getListaOpcoes());
 		statusFormulario = StatusFormularioEnum.INCLUIR;
 		return "form";
 	}
@@ -98,7 +102,5 @@ public class ColaboradorController {
 		}
 		return false;
 	}
-
 	
-
 }

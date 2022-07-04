@@ -9,7 +9,9 @@ public interface ServiceColaborador {
 	
 	boolean isCpfValido(String cpf, StatusFormularioEnum status) throws Exception;
 	
-	boolean validarAlimentosRepetidos(Integer opcao) throws Exception;
+//	boolean validarAlimentosRepetidos(List<OpcaoColaborador> opcoes) throws Exception;
+
+	boolean validarAlimentosRepetidos(Integer opcoes) throws Exception;
 
 }
 

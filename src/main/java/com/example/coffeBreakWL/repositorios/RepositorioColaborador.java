@@ -1,4 +1,4 @@
-package com.example.coffeBreakWL.entidade;
+package com.example.coffeBreakWL.repositorios;
 
 import java.util.List;
 
@@ -8,6 +8,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.example.coffeBreakWL.entidade.Colaborador;
 
 @Repository
 public interface RepositorioColaborador extends CrudRepository<Colaborador, Long> {
@@ -23,7 +25,7 @@ public interface RepositorioColaborador extends CrudRepository<Colaborador, Long
 
 	@Query(value = "SELECT * FROM colaborador WHERE ID_COLABORADOR = :id", nativeQuery = true)
 	public Colaborador getById(@Param("id") long id);
-	
+		
 	// --------------------------------------------------------------------------------------------
 	
 	@Modifying

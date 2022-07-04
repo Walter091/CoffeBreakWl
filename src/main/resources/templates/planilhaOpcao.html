@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Coffe Break Wl</title>
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+		integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+</head>
+
+<body>
+
+	<div class="container my-2">
+		
+		<h1>Lista das Opções</h1>
+		<hr />
+		<table border="1" class="table table-striped table-responsive-md">
+			<thead>
+				<tr>
+					<th>Nome</th>
+					<th>Tipo</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="opcao : ${listaOpcao}">
+					<td th:text="${opcao.nome}"></td>
+					<td th:text="${opcao.tipoOpcaoFormatado}"></td>
+					<td>
+						<a th:href="@{/indexOpcao/alterar/{id}(id=${opcao.idOpcao})}" class="btn btn-primary">Alterar</a>
+						<a th:href="@{/indexOpcao/excluir/{id}(id=${opcao.idOpcao})}" class="btn btn-danger">Excluir</a>
+					</td>
+
+				</tr>
+			</tbody>
+		</table>
+	<a th:href="@{/index}">Retornar para a lista de pessoas</a>
+	</div>
+
+</body>
+
+</html>
